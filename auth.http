@@ -1,0 +1,28 @@
+###
+POST http://localhost:8000/_allauth/app/v1/auth/signup HTTP/1.1
+content-type: application/json
+
+{
+  "email": "testuser1@domain.org",
+  "username": "testuser1",
+  "password": "Ss7206584*"
+}
+
+###
+POST http://localhost:8000/_allauth/app/v1/auth/login HTTP/1.1
+content-type: application/json
+
+{
+  "username": "testuser",
+  "password": "Ss7206584*"
+}
+
+### 
+GET http://localhost:8000/_allauth/app/v1/auth/session
+content-type:application/json
+X-Session-Token:r9s64sd3spnyn805jg1g56qjy5nz1y02
+
+###
+DELETE http://localhost:8000/_allauth/app/v1/auth/session
+X-Session-Token:r9s64sd3spnyn805jg1g56qjy5nz1y02
+
