@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-uy5yfg_!5r029!wennbn@ig#_srfl+b%-j8^-8m59z%+)am)vv
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*",'localhost','vitejsvitezls5j4j3-2hzs--5173--31fc58ec.local-credentialless.webcontainer.io']
 
 
 # Application definition
@@ -136,8 +136,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-SESSION_COOKIE_DOMAIN = "localhost"
-CSRF_COOKIE_DOMAIN = "localhost"
+#SESSION_COOKIE_DOMAIN = "localhost"
+#CSRF_COOKIE_DOMAIN = "localhost"
 
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
@@ -152,12 +152,13 @@ HEADLESS_ONLY = True
 HEADLESS_SERVE_SPECIFICATION = True
 HEADLESS_CLIENTS = ("app", "browser")
 
+CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",
+    'https://vitejsvitezls5j4j3-2hzs--5173--31fc58ec.local-credentialless.webcontainer.io'
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_HEADERS = (
     *default_headers,
     "x-session-token",

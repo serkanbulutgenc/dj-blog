@@ -6,10 +6,11 @@ from django.urls import reverse
 class Category(models.Model):
     title = models.CharField(_("Title"), max_length=255, help_text=_("Category title"))
     slug = models.SlugField(
-        _("Slıg"),
+        _("Slug"),
         max_length=255,
         help_text=_("Slug"),
         editable=False,
+        unique=True,
         null=False,
         blank=True,
     )
@@ -37,6 +38,7 @@ class Post(models.Model):
         _("Slıg"),
         max_length=255,
         help_text=_("Slug"),
+        unique=True,
         editable=False,
         null=False,
         blank=True,
