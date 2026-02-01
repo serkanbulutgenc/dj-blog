@@ -39,7 +39,7 @@ class PostModelService(ModelService):
 
 
 
-@api_controller("/posts", tags=["post"], auth=[x_session_token_auth])
+@api_controller("/posts", tags=["post"])
 class PostModelController(ModelControllerBase):
     service_type = PostModelService
     model_config = ModelConfig(
@@ -75,7 +75,7 @@ class PostModelController(ModelControllerBase):
     
     
 
-@api_controller("/categories", tags=["category"], auth=[x_session_token_auth])
+@api_controller("/categories", tags=["category"])
 class CategoryModelController(ModelControllerBase):
     model_config = ModelConfig(
         model=Category,
