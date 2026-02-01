@@ -8,6 +8,7 @@ content-type: application/json
   "password": "Ss7206584*"
 }
 
+
 ###
 POST http://localhost:8000/_allauth/app/v1/auth/login HTTP/1.1
 content-type: application/json
@@ -16,6 +17,11 @@ content-type: application/json
   "username": "sbulutgenc",
   "password": "Ss7206584*"
 }
+
+###http://localhost:8000/_allauth/{client}/v1/auth/session
+GET http://localhost:8000/_allauth/app/v1/auth/session HTTP/1.1
+content-type: application/json
+X-Session-Token:yt6axicb2qf2e6mccrzt0lcsv40iej3m
 
 ###
 POST http://localhost:8000/api/posts/ HTTP/1.1
