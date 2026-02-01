@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.urls import reverse
+from django.utils.text import slugify
 
 
 class Category(models.Model):
@@ -52,6 +53,10 @@ class Post(models.Model):
     body = models.TextField(_("Body"), help_text=_("Post Body"))
     created_at = models.DateTimeField(_("Created"), auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(_("Updated"), auto_now=True, editable=False)
+
+    def save(self, **kwargs):
+        self.slug = slugify(self.title, allow_unicode=False)
+        super().save(**kwargs)
 
     class Meta:
         verbose_name = _("Post")
