@@ -8,6 +8,7 @@ content-type: application/json
   "password": "Ss7206584*"
 }
 
+
 ###
 POST http://localhost:8000/_allauth/app/v1/auth/login HTTP/1.1
 content-type: application/json

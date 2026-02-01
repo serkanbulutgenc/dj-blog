@@ -18,17 +18,17 @@ from corsheaders.defaults import default_headers
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 
-env.read_env(BASE_DIR.parent/'.env')
+env.read_env(BASE_DIR.parent / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='!!!SET-YOUR-KEY')
+SECRET_KEY = env("SECRET_KEY", default="!!!SET-YOUR-KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
-ALLOWED_HOSTS = ['localhost','127.0.0.1','0.0.0.0']
+DEBUG = env("DEBUG")
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 
 
 # Application definition
@@ -85,11 +85,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-DATABASES = {  
-
-    "default":env.db_url('SQLITE_URL')
-    
-}
+DATABASES = {"default": env.db_url("SQLITE_URL")}
 
 
 AUTHENTICATION_BACKENDS = [
@@ -136,8 +132,8 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-#SESSION_COOKIE_DOMAIN = "localhost"
-#CSRF_COOKIE_DOMAIN = "localhost"
+# SESSION_COOKIE_DOMAIN = "localhost"
+# CSRF_COOKIE_DOMAIN = "localhost"
 
 
 # Allauth
@@ -150,15 +146,24 @@ ACCOUNT_USERNAME_MIN_LENGTH = 3
 HEADLESS_ONLY = True
 HEADLESS_SERVE_SPECIFICATION = True
 HEADLESS_CLIENTS = ("app", "browser")
+# from allauth.headless.tokens.strategies.jwt import JWTTokenStrategy
+HEADLESS_TOKEN_STRATEGY = "allauth.headless.tokens.strategies.jwt.JWTTokenStrategy"
+HEADLESS_JWT_PRIVATE_KEY = env(
+    "ALLAUTH_HEADLESS_JWT_KEY", default="!!!-Set-Your-private-key!!"
+)
 
-'''
+
+HEADLESS_JWT_ACCESS_TOKEN_EXPIRES_IN = 60
+HEADLESS_JWT_REFRESH_TOKEN_EXPIRES_IN = 120
+
+"""
 CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_ALL_ORIGINS = True
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     'https://vitejsvitezls5j4j3-2hzs--5173--31fc58ec.local-credentialless.webcontainer.io'
 ]
-'''
+"""
 CORS_ALLOW_HEADERS = (
     *default_headers,
     "x-session-token",

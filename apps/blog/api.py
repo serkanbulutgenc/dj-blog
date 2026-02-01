@@ -66,7 +66,7 @@ class PostModelService(ModelService):
     #     return super().get_all(**kwargs)
 
 
-@api_controller("/posts", tags=["post"])
+@api_controller("/posts", tags=["post"], auth=[jwt_token_auth])
 class PostModelController(ModelControllerBase):
     service_type = PostModelService
     model_config = ModelConfig(
@@ -123,7 +123,7 @@ class PostModelController(ModelControllerBase):
         return 400, {"success": False}
 
 
-@api_controller("/categories", tags=["category"])
+@api_controller("/categories", tags=["category"],auth=[jwt_token_auth])
 class CategoryModelController(ModelControllerBase):
     model_config = ModelConfig(
         model=Category,
