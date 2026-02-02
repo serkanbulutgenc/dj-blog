@@ -21,6 +21,10 @@ class Category(models.Model):
     created_at = models.DateTimeField(_("Created"), auto_now_add=True, editable=False)
     updated_at = models.DateTimeField(_("Updated"), auto_now=True, editable=False)
 
+    def save(self, **kwargs):
+        self.slug = slugify(self.title, allow_unicode=False)
+        super().save(**kwargs)
+
     class Meta:
         verbose_name = _("Category")
         verbose_name_plural = _("Categories")

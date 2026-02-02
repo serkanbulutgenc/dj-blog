@@ -52,7 +52,7 @@ class PostFilterSchema(FilterSchema):
 
 
 class PostModelService(ModelService):
-    def create(self, schema: BaseModel, **kwargs: Any) -> Any:
+    def create(self, schema: BaseModel, **kwargs: Any) -> PostCreateSchema:
         post_data = schema.model_dump()
         category_id = post_data.pop("categoryId")
 
@@ -61,9 +61,14 @@ class PostModelService(ModelService):
 
         return post
 
-    # def get_all(self, **kwargs):
-    #     print("list", kwargs)
-    #     return super().get_all(**kwargs)
+    def update(self, instance, schema, **kwargs) -> PostDetailSchema:
+        post_category = get_object_or_404(Category, pk=schema.category_id)
+
+        for key, value in schema.model_dump().items():
+            setattr(instance, key, value)
+        instance.category = post_category
+        instance.save()
+        return instance
 
 
 @api_controller("/posts", tags=["post"], auth=[jwt_token_auth])
@@ -84,50 +89,23 @@ class PostModelController(ModelControllerBase):
         allowed_routes=[
             "create",
             "list",
-        ],  # ,"find_one" , 'update', 'patch'],
+            "delete",
+            "find_one",
+            "update",
+        ],  # "find_one","update","patch",,"find_one" , 'update', 'patch'],
         list_route_info={"by_alias": True},
         create_route_info={"by_alias": True},
         create_schema=PostCreateSchema,
         retrieve_schema=PostListSchema,
     )
 
-    @route.get("/{int:post_id}", response=PostListSchema)
-    def get_post(self, post_id: int):
-        post = get_object_or_404(Post, pk=post_id)
-        return post
 
-    @route.put("/{int:post_id}", response=PostDetailSchema)
-    def put_post(self, schema: PostCreateSchema, post_id: int):
-        post = get_object_or_404(Post, pk=post_id)
-        post_category = get_object_or_404(Category, pk=schema.category_id)
-
-        for key, value in schema.model_dump().items():
-            setattr(post, key, value)
-        post.category = post_category
-        post.save()
-        return post
-
-    @route.delete(
-        "/{int:post_id}",
-        response={
-            200: DeletePostResponseSchema,
-            404: NotFoundScheme,
-            400: ResponseErrorSchema,
-        },
-    )
-    def post_delete(self, post_id: int):
-        post = get_object_or_404(Post, pk=post_id)
-        count, _ = post.delete()
-        if count:
-            return 200, {"data": {"id": post_id, "message": "Post deleted"}}
-        return 400, {"success": False}
-
-
-@api_controller("/categories", tags=["category"],auth=[jwt_token_auth])
+@api_controller("/categories", tags=["category"], auth=[jwt_token_auth])
 class CategoryModelController(ModelControllerBase):
     model_config = ModelConfig(
         model=Category,
         schema_config=ModelSchemaConfig(
+            read_only_fields=["id", "created_at", "updated_at"],
             exclude=set(),
             extra_config_dict={
                 "title": "CategorySchema",
