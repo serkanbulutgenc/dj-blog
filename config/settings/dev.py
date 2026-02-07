@@ -19,12 +19,3 @@ HEADLESS_FRONTEND_URLS = {
     # with the third-party provider fails.
     "socialaccount_login_error": "https://app.project.org/account/provider/callback",
 }
-
-CORS_ALLOW_ALL_ORIGINS=True
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://refinemui-fbik--5173--b894c784.local-credentialless.webcontainer.io"
-]

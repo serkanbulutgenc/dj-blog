@@ -1,9 +1,11 @@
-from ninja_extra import NinjaExtraAPI
-from apps.blog.api import PostController,CategoryModelController,FooController
-from apps.user.api import ProfileController
+from django_bolt import BoltAPI
+from apps.blog.api import api as post_api 
 
-app = NinjaExtraAPI(
-    title="DjBlog Api", version="0.0.1", description="A blog API with django"
+api = BoltAPI(
+    enable_logging=True,
+    trailing_slash='strip',
+    prefix="/api",
 )
 
-app.register_controllers(PostController,CategoryModelController,FooController, ProfileController)
+api.mount('/api', post_api)
+

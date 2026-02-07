@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import environ
 from pathlib import Path
-from corsheaders.defaults import default_headers
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,9 +43,8 @@ INSTALLED_APPS = [
     "allauth",
     "allauth.account",
     "allauth.headless",
-    "ninja_extra",
     "django_extensions",
-    "corsheaders",
+    "django_bolt",
     # local App
     "apps.user.apps.UserConfig",
     "apps.blog.apps.BlogConfig",
@@ -55,7 +53,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -160,11 +157,3 @@ HEADLESS_JWT_ROTATE_REFRESH_TOKEN=False
 
 HEADLESS_JWT_ACCESS_TOKEN_EXPIRES_IN = 300  # 300
 HEADLESS_JWT_REFRESH_TOKEN_EXPIRES_IN = 86400  # 86400
-
-CORS_ALLOW_HEADERS = (
-    *default_headers,
-    "x-session-token",
-    "x-email-verification-key",
-    "x-password-reset-key",
-)
-CORS_ALLOW_CREDENTIALS = True
