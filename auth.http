@@ -14,14 +14,14 @@ POST http://localhost:8000/_allauth/app/v1/auth/login HTTP/1.1
 content-type: application/json
 
 {
-  "username": "sbulutgenc",
+  "username": "user10",
   "password": "Ss7206584*"
 }
 
-###http://localhost:8000/_allauth/{client}/v1/auth/session
+###
 GET http://localhost:8000/_allauth/app/v1/auth/session HTTP/1.1
 content-type: application/json
-X-Session-Token:yt6axicb2qf2e6mccrzt0lcsv40iej3m
+X-Session-Token:yd25yfvv29jc84rm8pd1ydfxxgwws3bz
 
 ###
 POST http://localhost:8000/api/posts/ HTTP/1.1
@@ -35,17 +35,17 @@ X-Session-Token:khmko456qby1lxtavm3f5ul55udkgvdn
 }
 
 ###
-GET http://localhost:8000/api/posts/ HTTP/1.1
+GET http://localhost:8000/api/posts HTTP/1.1
 content-type: application/json
 X-Session-Token:khmko456qby1lxtavm3f5ul55udkgvdn
 
 
 ###
-GET http://localhost:8000/api/posts/60 HTTP/1.1
+GET http://localhost:8000/api/posts/173 HTTP/1.1
 content-type: application/json
 
 ###
-DELETE http://localhost:8000/api/posts/70 HTTP/1.1
+DELETE http://localhost:8000/api/posts/173 HTTP/1.1
 content-type: application/json
 
 
@@ -57,6 +57,33 @@ content-type: application/json
   "title": "Category title"
 }
 
+###
+POST http://localhost:8000/_allauth/app/v1/auth/signup HTTP/1.1
+content-type: application/json
+
+{
+  "username": "user10",
+  "email":"user10@user.com",
+  "password":"Ss7206584*"
+}
+
+###
+POST http://localhost:8000/_allauth/app/v1/tokens/refresh
+content-type: application/json 
+
+{
+  "refresh_token":"eyJhbGciOiJSUzI1NiIsImtpZCI6IlN1b2xIdVpkT2hmVkNVOGU3NlFJWjhjRE1JYW1keVBZck1CUGY5QjlfNEEiLCJ0eXAiOiJKV1QifQ.eyJpYXQiOjE3NzAyOTE4NTYsImV4cCI6MTc3MDM3ODI1Niwic2lkIjoiOW1sZW9hSnVabVBwbFBUTjg1OHQ5dlMybmdEMisrNUxEZ1p5d0tGTUs5QXNTYmpwVUgyS0JySDFUZS9mdDlmYSIsImp0aSI6IjgwMTlkYjUxLTFlZTgtNDkwYi1hNDFmLWYyYjQxNzYxODQ3ZSIsInRva2VuX3VzZSI6InJlZnJlc2giLCJzdWIiOiIxIn0.gxZcuayQcfh87OMttIknYCtrqdZiTi4Ay5KkhyPk0FFuQ2BH5bmrGFxQdLHVc9b5IgOazCdJqgQW8hLz9_FTLgJSeaqfV5tXSDhCTg3PxqiZ25J5KjqhRz2kMtXvdkWSha3cyO32ym58D40d0N8EBVA2K0ic24KrZIzGA7s_fpvbiilf1THMcTJfn-6m3Eoi6IF-IgSz_aDv-gd0X0UzwHg_kTWW9qJ0vqn48xqs8tdHYGwrcGfjh4BIDDW51rs6yMOZB9U3NNZ6KmOx0H5_NSaDLCtjnpzI2wYFmqwvRD5TJSE6xoHalSriL-fnUK-wTR7ixx_VENC54EbXmQcqew"
+}
+
+
+###
+DELETE http://localhost:8000/api/foo/100 HTTP/1.1
+content-type: application/json
+
+###
+GET http://localhost:8000/api/me HTTP/1.1
+content-type: application/json
+X-Session-Token:yd25yfvv29jc84rm8pd1ydfxxgwws3bz
 
 ###
 GET http://localhost:8000/api/categories/ HTTP/1.1
@@ -69,9 +96,4 @@ content-type: application/json
 ### 
 GET http://localhost:8000/_allauth/app/v1/auth/session
 content-type:application/json
-X-Session-Token:r9s64sd3spnyn805jg1g56qjy5nz1y02
-
-###
-DELETE http://localhost:8000/_allauth/app/v1/auth/session
-X-Session-Token:r9s64sd3spnyn805jg1g56qjy5nz1y02
-
+X-Session-Token:yd25yfvv29jc84rm8pd1ydfxxgwws3bz

@@ -28,7 +28,7 @@ SECRET_KEY = env("SECRET_KEY", default="!!!SET-YOUR-KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env("DEBUG")
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0","refinemui-fbik--5173--31fc58ec.local-credentialless.webcontainer.io"]
 
 
 # Application definition
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "corsheaders",
     # local App
+    "apps.user.apps.UserConfig",
     "apps.blog.apps.BlogConfig",
 ]
 
@@ -132,10 +133,13 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+APPEND_SLASH=True
+
 # SESSION_COOKIE_DOMAIN = "localhost"
 # CSRF_COOKIE_DOMAIN = "localhost"
 
 
+AUTH_USER_MODEL = "user.AppUser"
 # Allauth
 ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*"]
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
@@ -151,6 +155,7 @@ HEADLESS_TOKEN_STRATEGY = "allauth.headless.tokens.strategies.jwt.JWTTokenStrate
 HEADLESS_JWT_PRIVATE_KEY = env(
     "ALLAUTH_HEADLESS_JWT_KEY", default="!!!-Set-Your-private-key!!"
 )
+HEADLESS_JWT_ROTATE_REFRESH_TOKEN=False
 
 
 HEADLESS_JWT_ACCESS_TOKEN_EXPIRES_IN = 300  # 300
