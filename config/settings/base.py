@@ -18,17 +18,17 @@ from corsheaders.defaults import default_headers
 BASE_DIR = Path(__file__).resolve().parent.parent
 env = environ.Env()
 
-env.read_env(BASE_DIR.parent/'.env')
+env.read_env(BASE_DIR.parent / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY', default='!!!SET-YOUR-KEY')
+SECRET_KEY = env("SECRET_KEY", default="!!!SET-YOUR-KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
-ALLOWED_HOSTS = ['localhost','127.0.0.1','0.0.0.0']
+DEBUG = env("DEBUG")
+ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0","refinemui-fbik--5173--31fc58ec.local-credentialless.webcontainer.io"]
 
 
 # Application definition
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "django_extensions",
     "corsheaders",
     # local App
+    "apps.user.apps.UserConfig",
     "apps.blog.apps.BlogConfig",
 ]
 
@@ -85,11 +86,7 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-DATABASES = {  
-
-    "default":env.db_url('SQLITE_URL')
-    
-}
+DATABASES = {"default": env.db_url("SQLITE_URL")}
 
 
 AUTHENTICATION_BACKENDS = [
@@ -136,10 +133,13 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
-#SESSION_COOKIE_DOMAIN = "localhost"
-#CSRF_COOKIE_DOMAIN = "localhost"
+APPEND_SLASH=True
+
+# SESSION_COOKIE_DOMAIN = "localhost"
+# CSRF_COOKIE_DOMAIN = "localhost"
 
 
+AUTH_USER_MODEL = "user.AppUser"
 # Allauth
 ACCOUNT_SIGNUP_FIELDS = ["username*", "email*", "password1*"]
 ACCOUNT_LOGIN_METHODS = {"username", "email"}
@@ -150,51 +150,17 @@ ACCOUNT_USERNAME_MIN_LENGTH = 3
 HEADLESS_ONLY = True
 HEADLESS_SERVE_SPECIFICATION = True
 HEADLESS_CLIENTS = ("app", "browser")
-#from allauth.headless.tokens.strategies.jwt import JWTTokenStrategy
-HEADLESS_TOKEN_STRATEGY="allauth.headless.tokens.strategies.jwt.JWTTokenStrategy"
-HEADLESS_JWT_PRIVATE_KEY='''
------BEGIN PRIVATE KEY-----
-MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDRa7PR81xWc1oS
-83TvDeqvdpxitd4yQTTzSqtAitaK7RNDeFGNE5a8Zsqo76o29s5m3Oc+um8mHxWX
-ql2BwI4XfJDRUd5sxKwQuQjtyp1i8ttvJfTTPgEo3taAAn5oGJsWuKqSfU1mY+PG
-CSBurhoKhzmzWpmelVbd51/9dWY6w3rRLbg03+I5epUJystwoqorp3wfrl1OkgWh
-VumbnQi9lTzJtZrwTLE5SVCcp//hN5FAzNSpU4Gc+EN3UbtHb/a1rhW8IiuBEGaC
-5hcx/JtUt3Gy4bXR/CPxJ0tq7trzvUV+T9PTjIhAgD/0w4vCp12xJi4RAbHct2aP
-6sNtYpcRAgMBAAECggEASf095n8PUCHoIIrwdOdbU8vZu8xaqTG9lfl7IM4Mt7/E
-DxHq6ieSGZVNo7stTccMLG5+qvxuea8Az3lrGQUhjq29cp70sUQZML1XKMBts8Bv
-A8mKwrmE6l40tbxr0bZj0PbEmQX5OyQunNCrqz8Kx054deQcI1nK+5KcKO36BOdY
-RtAdlgx3JXRtzWlokQzPKCL6dubb+EnANeLPDsopDJwfQ2HlDq0VojyX8lZyynzv
-XthalYNGJ2CqyejSATNGR8LOziaol2f6VO37OinWz6uvsofAcYMW/qNzcutTeTq9
-32rSNueIUb59SuSVLYw+vxBGow+nhlcj+CYh8FNnGwKBgQD/3WzBsmxfBysYASxo
-RHoQMFql8seLCY8+0AZfOHrEawErwe+IsC89m3LK4dDISjO8NtjV1m94SrvfbfQZ
-yfSe5uTTY5TW++oGi0W9+42acZemES2ts/S51NPElj/+HTktMGEqL1rCeiQ6Nigc
-4hLulbidj2AQ7gWRtGQvjOIBfwKBgQDRiABmF5Ttdrg+JHYZVZfL7bBCEX1ljuWS
-YHEmv3vNLxHSHX3nIAXgX1zTO/0qgAbV4xlpBngnble4QvkCdUIqj1yLC9Ka/GJl
-a0POgBg2fMWSs3iYE6QuB2cwaWWBlGoRTdpNIF0OEtZKzBHFojDTZOsHExJvCqBQ
-qUkMknKPbwKBgQDsbiCEMCph+U7B5LuzMauVcAkjlV78RH4gbbulm5weCj7Pv2pn
-ZV6R0CXYAaiam66IuinOF1Nz1aMbSBArEGpBt1w1VayAp9HN8D4m2t8zmsmmA/Ow
-sjxux5JT8v75AuoFrtHqWE3GrXTycX7JicIywxkQRx9fJYLx6740Djv9YwKBgCGV
-MrsqPGxzAsSzA1q8JUBCMGXmd7q3VIRJgNk9B5KzYJ/UqkFJGKgFoNMaYlFVg8L0
-SzZSGx/2x4h484A5WwmHQMXodzDwErU+o/eNAFR7Ww9QRJvbSg02kotn2SUTrIxp
-dfu2nDONQVtrqc2LWVgIbMMNg37YrSlAeLzTHBlxAoGAF/BfDFFQeE2eZqiwt27K
-1vn2Jkvzc6c8kX48SJAK+Q0Yfy4zEOs6c2oRBlfweKwrNF0Px2eo22nsvHhU9HnN
-VZSx5k63r+1gBJt5pMi3PgUrsbCajoGGuNBosl4XfZFT8VFQNPEpWghPsRjNFRIv
-R7Gq1x2abm30P++EQvkGbMw=
------END PRIVATE KEY-----
-'''
+# from allauth.headless.tokens.strategies.jwt import JWTTokenStrategy
+HEADLESS_TOKEN_STRATEGY = "allauth.headless.tokens.strategies.jwt.JWTTokenStrategy"
+HEADLESS_JWT_PRIVATE_KEY = env(
+    "ALLAUTH_HEADLESS_JWT_KEY", default="!!!-Set-Your-private-key!!"
+)
+HEADLESS_JWT_ROTATE_REFRESH_TOKEN=False
 
 
-HEADLESS_JWT_ACCESS_TOKEN_EXPIRES_IN=60
-HEADLESS_JWT_REFRESH_TOKEN_EXPIRES_IN=120
+HEADLESS_JWT_ACCESS_TOKEN_EXPIRES_IN = 300  # 300
+HEADLESS_JWT_REFRESH_TOKEN_EXPIRES_IN = 86400  # 86400
 
-'''
-CORS_ALLOWED_ORIGINS = [
-CORS_ALLOW_ALL_ORIGINS = True
-    "http://localhost:8000",
-    "http://127.0.0.1:8000",
-    'https://vitejsvitezls5j4j3-2hzs--5173--31fc58ec.local-credentialless.webcontainer.io'
-]
-'''
 CORS_ALLOW_HEADERS = (
     *default_headers,
     "x-session-token",

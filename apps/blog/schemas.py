@@ -8,8 +8,8 @@ from ninja_schema import ModelSchema, Schema
 from .models import Post, Category
 
 
-class DeletePostResponseSchema(Schema):
-    data:dict[str,Any]|None
+class DeleteResponseSchema(Schema):
+    data:dict[str,Any]|None = None
 
 class CategoryBaseSchema(Schema):
     model_config = ConfigDict(
