@@ -1,0 +1,36 @@
+POST http://localhost:8000/api/posts/ HTTP/1.1
+content-type: application/json
+X-Session-Token:khmko456qby1lxtavm3f5ul55udkgvdn
+
+{
+  "title": "Post titletd",
+  "body": "post content",
+  "categoryId": "1"
+}
+
+###
+GET http://localhost:8000/api/posts HTTP/1.1
+content-type: application/json
+X-Session-Token:khmko456qby1lxtavm3f5ul55udkgvdn
+
+
+###
+GET http://localhost:8000/api/posts/173 HTTP/1.1
+content-type: application/json
+
+###
+DELETE http://localhost:8000/api/posts/173 HTTP/1.1
+content-type: application/json
+
+
+###
+POST http://localhost:8000/api/categories/ HTTP/1.1
+content-type: application/json
+
+{
+  "title": "Category title"
+}
+
+###
+DELETE http://localhost:8000/api/categories/16 HTTP/1.1
+content-type: application/json
