@@ -1,5 +1,5 @@
 [project]
-name = "django_blog"
+name = "django-blog"
 version = "0.1.0"
 description = "This is a sample blog project with Django."
 readme = "README.md"
@@ -30,8 +30,8 @@ dependencies = [
   "psycopg[c]==3.3.6",
   "python-slugify==9.1.2",
   "redis==8.1.0",
-  "uvicorn-worker==0.4.0",
   "uvicorn[standard]==0.54.0",
+  "uvicorn-worker==0.4.0",
   "whitenoise==6.12.0",
 ]
 
@@ -61,16 +61,16 @@ dev = [
 
 # ==== djLint ====
 [tool.djlint]
-blank_line_after_tag = "load,extends"
-custom_blocks = "element,slot"
-close_void_tags = true
-format_css = true
-format_js = true
-ignore = "H006,H030,H031"
+profile = "django"
 include = "H017,H035"
 indent = 2
 max_line_length = 119
-profile = "django"
+blank_line_after_tag = "load,extends"
+close_void_tags = true
+format_css = true
+format_js = true
+custom_blocks = "element,slot"
+ignore = "H006,H030,H031"
 css.indent_size = 2
 js.indent_size = 2
 
@@ -81,7 +81,6 @@ extend-exclude = [
   "*/migrations/*.py",
   "staticfiles/*",
 ]
-
 lint.select = [
   "A",
   "ASYNC",
@@ -133,9 +132,10 @@ lint.select = [
   "YTT",
 ]
 lint.ignore = [
+  "E402",
   "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
   "S101",   # Use of assert detected https://docs.astral.sh/ruff/rules/assert/
-  "SIM102", # sometimes it's better to nest
+  "SIM102" # sometimes it's better to nest
   # of types for comparison.
   # Deactivated because it can make the code slow:
   # https://github.com/astral-sh/ruff/issues/7871
@@ -145,6 +145,25 @@ lint.isort.force-single-line = true
 # ==== pyproject-fmt ====
 [tool.pyproject-fmt]
 keep_full_version = true
+
+# ==== mypy ====
+[tool.mypy]
+ignore_missing_imports = true
+python_version = "3.14"
+check_untyped_defs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+plugins = [
+  "mypy_django_plugin.main",
+]
+warn_unused_configs = true
+overrides = [
+  # Django migrations should not produce any errors:
+  { module = "*.migrations.*", ignore_errors = true }
+]
+
+[tool.django-stubs]
+django_settings_module = "config.settings.test"
 
 # ==== pytest ====
 [tool.pytest]
@@ -159,28 +178,8 @@ python_files = [
   "test_*.py",
 ]
 
+[tool.coverage]
 # ==== Coverage ====
-[tool.coverage.run]
-include = [ "django_blog/**" ]
-omit = [ "*/migrations/*", "*/tests/*" ]
-plugins = [ "django_coverage_plugin" ]
-
-# ==== mypy ====
-[tool.mypy]
-python_version = "3.14"
-check_untyped_defs = true
-ignore_missing_imports = true
-warn_unused_ignores = true
-warn_redundant_casts = true
-warn_unused_configs = true
-plugins = [
-  "mypy_django_plugin.main",
-]
-
-[[tool.mypy.overrides]]
-# Django migrations should not produce any errors:
-module = "*.migrations.*"
-ignore_errors = true
-
-[tool.django-stubs]
-django_settings_module = "config.settings.test"
+run.include = [ "django_blog/**" ]
+run.omit = [ "*/migrations/*", "*/tests/*" ]
+run.plugins = [ "django_coverage_plugin" ]
