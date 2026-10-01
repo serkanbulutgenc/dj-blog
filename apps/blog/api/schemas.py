@@ -6,6 +6,29 @@ from ninja.filter_schema import FilterSchema
 
 from apps.blog.models import Category
 from apps.blog.models import Post
+from apps.blog.models import Tag
+
+
+class TagSchemas:
+    class TagListSchema(ModelSchema):
+        class Meta:
+            model = Tag
+            fields = ("id", "name", "slug")
+
+    class TagDetailSchema(ModelSchema):
+        class Meta:
+            model = Tag
+            fields = "__all__"
+
+    class TagInSchema(ModelSchema):
+        class Meta:
+            model = Tag
+            fields = ("name",)
+            fields_optional = "__all__"
+
+    class TagFilterSchema(FilterSchema):
+        name: str | None = None
+        slug: str | None = None
 
 
 class CategoryListSchema(ModelSchema):
@@ -32,9 +55,7 @@ class CategoryFilterSchema(FilterSchema):
 
 
 class PostInSchema(ModelSchema):
-    category: (
-        Annotated[int | None, "Category ID", Field(alias="category_id")] | None
-    ) = None
+    category: Annotated[int | None, "Category ID", Field(alias="category_id")] = None
 
     class Meta:
         model = Post
@@ -44,6 +65,7 @@ class PostInSchema(ModelSchema):
 
 class PostListSchema(ModelSchema):
     category: CategoryListSchema | None = None
+    tags: list[TagSchemas.TagListSchema] | None = None
 
     class Meta:
         model = Post

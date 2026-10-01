@@ -3,6 +3,7 @@ from django.contrib import admin
 from .forms import PostAdminForm
 from .models import Category
 from .models import Post
+from .models import Tag
 
 
 # Register your models here.
@@ -25,3 +26,8 @@ class PostAdmin(admin.ModelAdmin):
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ("title", "slug", "created")
+
+
+@admin.register(Tag)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ("name", "slug", "created")
