@@ -6,4 +6,4 @@ from .models import Post
 class PostAdminForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ("title", "content")
+        fields = ("title", "category", "content")

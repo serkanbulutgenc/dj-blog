@@ -1,9 +1,7 @@
-from uuid import uuid1
-
 from django.contrib import admin
-from django.utils.text import slugify
 
 from .forms import PostAdminForm
+from .models import Category
 from .models import Post
 
 
@@ -12,7 +10,7 @@ from .models import Post
 class PostAdmin(admin.ModelAdmin):
     list_display = ("title", "slug", "created")
     form = PostAdminForm
-
+    """
     def save_model(self, request, obj, form, change):
         post_slug = slugify(form.cleaned_data.get("title"))
 
@@ -21,3 +19,9 @@ class PostAdmin(admin.ModelAdmin):
         obj.slug = post_slug
 
         super().save_model(request, obj, form, change)
+    """
+
+
+@admin.register(Category)
+class CategoryAdmin(admin.ModelAdmin):
+    list_display = ("title", "slug", "created")

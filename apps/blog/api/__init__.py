@@ -1,3 +1,4 @@
-from apps.blog.api.views import router as blog_router
+from apps.blog.api.routers.categories import router as category_router
+from apps.blog.api.routers.posts import router as post_router
 
-__all__ = ["blog_router"]
+__all__ = ["category_router", "post_router"]
