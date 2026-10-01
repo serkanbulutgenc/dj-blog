@@ -5,9 +5,9 @@ from typing import TYPE_CHECKING
 from django.shortcuts import get_object_or_404
 from ninja import Router
 
-from django_blog.users.api.schema import UpdateUserSchema
-from django_blog.users.api.schema import UserSchema
-from django_blog.users.models import User
+from apps.users.api.schema import UpdateUserSchema
+from apps.users.api.schema import UserSchema
+from apps.users.models import User
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet

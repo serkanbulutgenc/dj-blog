@@ -4,7 +4,7 @@ from factory import Faker
 from factory import post_generation
 from factory.django import DjangoModelFactory
 
-from django_blog.users.models import User
+from apps.users.models import User
 
 
 class UserFactory(DjangoModelFactory[User]):

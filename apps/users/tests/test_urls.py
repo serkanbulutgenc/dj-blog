@@ -6,7 +6,7 @@ from django.urls import resolve
 from django.urls import reverse
 
 if TYPE_CHECKING:
-    from django_blog.users.models import User
+    from apps.users.models import User
 
 
 def test_detail(user: User):

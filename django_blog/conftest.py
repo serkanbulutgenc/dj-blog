@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING
 
 import pytest
 
-from django_blog.users.tests.factories import UserFactory
+from apps.users.tests.factories import UserFactory
 
 if TYPE_CHECKING:
-    from django_blog.users.models import User
+    from apps.users.models import User
 
 
 @pytest.fixture(autouse=True)

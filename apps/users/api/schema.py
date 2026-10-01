@@ -1,7 +1,7 @@
 from django.urls import reverse
 from ninja import ModelSchema
 
-from django_blog.users.models import User
+from apps.users.models import User
 
 
 class UpdateUserSchema(ModelSchema):

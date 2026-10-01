@@ -97,7 +97,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    "django_blog.users",
+    "apps.users.apps.UsersConfig",
     # Your stuff: custom apps go here
     "apps.blog.apps.BlogConfig",
 ]
@@ -203,7 +203,7 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "django_blog.users.context_processors.allauth_settings",
+                "apps.users.context_processors.allauth_settings",
             ],
         },
     },
@@ -289,13 +289,13 @@ ACCOUNT_SIGNUP_FIELDS = ["email*", "username*", "password1*", "password2*"]
 # https://docs.allauth.org/en/latest/account/configuration.html
 ACCOUNT_EMAIL_VERIFICATION = "mandatory"
 # https://docs.allauth.org/en/latest/account/configuration.html
-ACCOUNT_ADAPTER = "django_blog.users.adapters.AccountAdapter"
+ACCOUNT_ADAPTER = "apps.users.adapters.AccountAdapter"
 # https://docs.allauth.org/en/latest/account/forms.html
-ACCOUNT_FORMS = {"signup": "django_blog.users.forms.UserSignupForm"}
+ACCOUNT_FORMS = {"signup": "apps.users.forms.UserSignupForm"}
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
-SOCIALACCOUNT_ADAPTER = "django_blog.users.adapters.SocialAccountAdapter"
+SOCIALACCOUNT_ADAPTER = "apps.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
-SOCIALACCOUNT_FORMS = {"signup": "django_blog.users.forms.UserSocialSignupForm"}
+SOCIALACCOUNT_FORMS = {"signup": "apps.users.forms.UserSocialSignupForm"}
 
 
 # Your stuff...

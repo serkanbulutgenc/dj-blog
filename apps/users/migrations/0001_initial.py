@@ -4,7 +4,7 @@ import django.utils.timezone
 from django.db import migrations
 from django.db import models
 
-import django_blog.users.models
+import apps.users.models
 
 
 class Migration(migrations.Migration):
