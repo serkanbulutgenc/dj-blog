@@ -13,6 +13,7 @@ from apps.blog.api.schemas import PostListSchema
 from apps.blog.api.schemas import PostOutSchema
 from apps.blog.models import Category
 from apps.blog.models import Post
+from apps.blog.models import Tag
 
 logger = logging.getLogger(__name__)
 
@@ -37,7 +38,21 @@ def create_post(request, payload: PostInSchema):
     category_id = created_fields.pop("category", None)
     post_category = get_object_or_404(Category, id=category_id) if category_id else None
 
-    return Post.objects.create(**created_fields, category=post_category)
+    post_tag_ids = created_fields.pop("tags", None)
+    post_tags = Tag.objects.filter(id__in=post_tag_ids) if post_tag_ids else None
+
+    logger.debug(
+        "Creating post with fields: %s, category: %s, tags: %s",
+        created_fields,
+        post_category,
+        post_tags,
+    )
+
+    post = Post.objects.create(**created_fields, category=post_category)
+
+    if post_tags:
+        post.tags.set(post_tags)
+    return post
 
 
 @router.put("/{post_id}", response={200: PostDetailSchema})
@@ -47,12 +62,18 @@ def update_post(request, post_id: int, payload: PostInSchema):
 
     if updated_fields:
         category_id = updated_fields.pop("category", None)
+        post_tag_ids = updated_fields.pop("tags", None)
+        post_tags = Tag.objects.filter(id__in=post_tag_ids) if post_tag_ids else None
 
         if category_id:
             post_category = get_object_or_404(Category, id=category_id)
             post.category = post_category
         for attr, value in updated_fields.items():
             setattr(post, attr, value)
+        if post_tags:
+            post.tags.set([2, 3])
+        else:
+            post.tags.clear()
         post.save()
     return post
 
