@@ -2,6 +2,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from ninja import NinjaAPI
 from ninja.security import SessionAuth
 
+from apps.blog.api import blog_router
+
 api = NinjaAPI(
     urls_namespace="api",
     auth=SessionAuth(),
@@ -9,3 +11,4 @@ api = NinjaAPI(
 )
 
 api.add_router("/users/", "django_blog.users.api.views.router")
+api.add_router(prefix="/blog", router=blog_router)

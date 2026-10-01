@@ -1,22 +1,28 @@
+# Create your models here.
+import logging
+
 from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django_extensions.db.models import AutoSlugField
+from django_extensions.db.models import TimeStampedModel
 
-# Create your models here.
+logger = logging.getLogger(__name__)
 
 
-class Post(models.Model):
+class Post(TimeStampedModel, models.Model):
     title = models.CharField(
         max_length=255,
         verbose_name=_("Title"),
         help_text=_("Enter the title of the post"),
         validators=[MinLengthValidator(5)],
     )
-    slug = models.SlugField(
-        max_length=255,
+    slug = AutoSlugField(
+        populate_from="title",
         unique=True,
         blank=True,
         editable=False,
+        overwrite=True,
         verbose_name=_("Slug"),
     )
     content = models.TextField(
@@ -24,13 +30,11 @@ class Post(models.Model):
         max_length=1000,
         help_text=_("Enter the content of the post"),
     )
-    created_at = models.DateTimeField(auto_now_add=True, editable=False)
-    updated_at = models.DateTimeField(auto_now=True, editable=False)
 
     class Meta:
         verbose_name = _("Post")
         verbose_name_plural = _("Posts")
-        ordering = ["-created_at"]
+        ordering = ["-created"]
         constraints = [models.UniqueConstraint(fields=["slug"], name="unique_slug")]
 
     def __str__(self):
