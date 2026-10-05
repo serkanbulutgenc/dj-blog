@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from typing import Annotated
 
 from ninja import Field
@@ -7,6 +8,9 @@ from ninja.filter_schema import FilterSchema
 from apps.blog.models import Category
 from apps.blog.models import Post
 from apps.blog.models import Tag
+
+if TYPE_CHECKING:
+    from pydantic import PositiveInt
 
 
 class TagSchemas:
@@ -56,6 +60,7 @@ class CategoryFilterSchema(FilterSchema):
 
 class PostInSchema(ModelSchema):
     category: Annotated[int | None, "Category ID", Field(alias="category_id")] = None
+    tags: Annotated[list[PositiveInt] | None, "Tag IDs"] = None
 
     class Meta:
         model = Post

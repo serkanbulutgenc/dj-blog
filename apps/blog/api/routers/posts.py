@@ -35,18 +35,12 @@ def get_post(request, post_id: int):
 @router.post("/", response={201: PostOutSchema})
 def create_post(request, payload: PostInSchema):
     created_fields = payload.dict(exclude_unset=True)
+
     category_id = created_fields.pop("category", None)
     post_category = get_object_or_404(Category, id=category_id) if category_id else None
 
     post_tag_ids = created_fields.pop("tags", None)
     post_tags = Tag.objects.filter(id__in=post_tag_ids) if post_tag_ids else None
-
-    logger.debug(
-        "Creating post with fields: %s, category: %s, tags: %s",
-        created_fields,
-        post_category,
-        post_tags,
-    )
 
     post = Post.objects.create(**created_fields, category=post_category)
 
@@ -71,7 +65,7 @@ def update_post(request, post_id: int, payload: PostInSchema):
         for attr, value in updated_fields.items():
             setattr(post, attr, value)
         if post_tags:
-            post.tags.set([2, 3])
+            post.tags.set(post_tags)
         else:
             post.tags.clear()
         post.save()
