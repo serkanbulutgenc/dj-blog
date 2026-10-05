@@ -1,7 +1,7 @@
 volumes:
   django_blog_local_postgres_data: {}
   django_blog_local_postgres_data_backups: {}
-  
+
 
 services:
   django:
