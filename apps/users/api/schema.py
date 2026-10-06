@@ -22,11 +22,9 @@ class AddressInfoSchema(Schema):
 
 class ProfileInfoSchema(Schema):
     bio: Annotated[str | None, Field(max_length=500)] = None
-    dob: Annotated[date | None, Field(max_length=10)] = None
+    dob: Annotated[date | None, Field(description="Date of birth")] = None
     phone: Annotated[str | None, Field(pattern=r"^\+?1?\d{9,15}$")] = None
-    social_media_links: list[
-        Annotated[HttpUrl | None, Field(default=None, max_length=5)]
-    ] = None
+    social_media_links: Annotated[list[HttpUrl] | None, Field(max_length=5)] = None
     address: AddressInfoSchema | None = None
 
 
@@ -42,6 +40,7 @@ class UpdateUserSchema(ModelSchema):
     class Meta:
         model = User
         fields = ["username"]
+        fields_optional = ["profile"]
 
 
 class UserSchema(ModelSchema):

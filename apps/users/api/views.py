@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import logging as logger
 from typing import TYPE_CHECKING
 
 from django.shortcuts import get_object_or_404
@@ -8,6 +9,8 @@ from ninja import Router
 from apps.users.api.schema import UpdateUserSchema
 from apps.users.api.schema import UserSchema
 from apps.users.models import User
+
+logger = logger.getLogger(__name__)
 
 if TYPE_CHECKING:
     from django.db.models import QuerySet
@@ -45,11 +48,12 @@ def update_current_user(request, data: UpdateUserSchema):
 
 @router.patch("/{username}/", response=UserSchema)
 def update_user(request, username: str, data: UpdateUserSchema):
+    logger.info("Updating user with data: %s", data)
     users_qs = _get_users_queryset(request)
     user = get_object_or_404(users_qs, username=username)
     user.username = data.username
     if data.profile is not None:
-        user.profile.info = data.profile
+        user.profile.info = data.profile.model_dump(mode="json", exclude_unset=True)
         user.profile.save()
     user.save()
     return user
