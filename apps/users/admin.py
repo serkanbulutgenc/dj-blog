@@ -6,6 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from .forms import UserAdminChangeForm
 from .forms import UserAdminCreationForm
+from .models import Profile
 from .models import User
 
 if settings.DJANGO_ADMIN_FORCE_ALLAUTH:
@@ -15,13 +16,26 @@ if settings.DJANGO_ADMIN_FORCE_ALLAUTH:
     admin.site.login = secure_admin_login(admin.site.login)  # type: ignore[method-assign]
 
 
+class InlineProfile(admin.StackedInline):
+    model = Profile
+    can_delete = False
+    verbose_name = _("Profile")
+    verbose_name_plural = _("Profiles")
+
+
 @admin.register(User)
 class UserAdmin(auth_admin.UserAdmin):
     form = UserAdminChangeForm
     add_form = UserAdminCreationForm
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
-        (_("Personal info"), {"fields": ("name", "email")}),
+        (
+            _("Basic information"),
+            {
+                "fields": ("username", "password", "email"),
+                "classes": ("collapse",),
+                "description": _("Basic account information"),
+            },
+        ),
         (
             _("Permissions"),
             {
@@ -32,9 +46,13 @@ class UserAdmin(auth_admin.UserAdmin):
                     "groups",
                     "user_permissions",
                 ),
+                "classes": ("collapse",),
+                "description": _("User permissions"),
             },
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
-    list_display = ["username", "name", "is_superuser"]
-    search_fields = ["name"]
+    list_display_links = ["username"]
+    list_display = ["username", "email", "is_superuser"]
+    inlines = [InlineProfile]
+    search_fields = ["email", "username"]

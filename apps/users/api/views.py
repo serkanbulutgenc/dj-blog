@@ -16,7 +16,7 @@ router = Router(tags=["users"])
 
 
 def _get_users_queryset(request) -> QuerySet[User]:
-    return User.objects.filter(pk=request.user.pk)
+    return User.objects.filter(pk=request.user.pk).select_related("profile")
 
 
 @router.get("/", response=list[UserSchema])
@@ -38,7 +38,6 @@ def retrieve_user(request, username: str):
 @router.patch("/me/", response=UserSchema)
 def update_current_user(request, data: UpdateUserSchema):
     user = request.user
-    user.name = data.name
     user.username = data.username
     user.save()
     return user
@@ -48,7 +47,9 @@ def update_current_user(request, data: UpdateUserSchema):
 def update_user(request, username: str, data: UpdateUserSchema):
     users_qs = _get_users_queryset(request)
     user = get_object_or_404(users_qs, username=username)
-    user.name = data.name
     user.username = data.username
+    if data.profile is not None:
+        user.profile.info = data.profile
+        user.profile.save()
     user.save()
     return user

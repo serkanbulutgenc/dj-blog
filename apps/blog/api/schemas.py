@@ -5,6 +5,7 @@ from typing import Annotated
 from ninja import Field
 from ninja import ModelSchema
 from ninja.filter_schema import FilterSchema
+from pydantic import PositiveInt  # noqa:TC002
 
 from apps.blog.models import Category
 from apps.blog.models import Post
@@ -58,7 +59,7 @@ class CategoryFilterSchema(FilterSchema):
 
 class PostInSchema(ModelSchema):
     category: Annotated[int | None, "Category ID", Field(alias="category_id")] = None
-    tags: Annotated[list[int] | None, "Tag IDs", Field(gt=0, max_length=10)] = None
+    tags: list[Annotated[PositiveInt | None, "Tag IDs", Field(max_length=10)]] = None
 
     class Meta:
         model = Post
