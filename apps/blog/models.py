@@ -1,6 +1,7 @@
 # Create your models here.
 import logging
 
+from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
@@ -9,6 +10,8 @@ from django_extensions.db.models import TimeStampedModel
 from django_extensions.db.models import TitleSlugDescriptionModel
 
 logger = logging.getLogger(__name__)
+
+USER_MODEL = get_user_model()
 
 
 class Category(TitleSlugDescriptionModel, TimeStampedModel, models.Model):
@@ -66,6 +69,16 @@ class Post(TimeStampedModel, models.Model):
         editable=False,
         overwrite=True,
         verbose_name=_("Slug"),
+    )
+    owner = models.ForeignKey(
+        USER_MODEL,
+        default=None,
+        null=False,
+        editable=False,
+        on_delete=models.CASCADE,
+        related_name="posts",
+        verbose_name=_("Owner"),
+        help_text=_("Select the owner of the post"),
     )
     category = models.ForeignKey(
         Category,

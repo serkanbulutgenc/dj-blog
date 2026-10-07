@@ -11,16 +11,22 @@ from .models import Tag
 class PostAdmin(admin.ModelAdmin):
     list_display = ("title", "slug", "created")
     form = PostAdminForm
-    """
-    def save_model(self, request, obj, form, change):
-        post_slug = slugify(form.cleaned_data.get("title"))
 
-        if Post.objects.filter(slug=post_slug).exists() and not change:
-            post_slug = f"{post_slug}-{uuid1().hex[:6]}"
-        obj.slug = post_slug
+    def save_model(self, request, obj, form, change):
+        if not obj.owner_id:
+            obj.owner = request.user
+        else:
+            obj.owner = request.user
+        obj.save()
 
         super().save_model(request, obj, form, change)
-    """
+
+    def get_queryset(self, request):
+        if request.user.is_superuser:
+            qs = super().get_queryset(request)
+        else:
+            qs = super().get_queryset(request).filter(owner=request.user)
+        return qs
 
 
 @admin.register(Category)

@@ -70,6 +70,7 @@ class PostInSchema(ModelSchema):
 class PostListSchema(ModelSchema):
     category: CategoryListSchema | None = None
     tags: list[TagSchemas.TagListSchema] | None = None
+    owner: Annotated[str | None, Field(alias="owner.username")]
 
     class Meta:
         model = Post

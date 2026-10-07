@@ -1,10 +1,13 @@
 import logging
+from functools import wraps
 
 from django.shortcuts import get_object_or_404
 from ninja import Query
 from ninja import Router
+from ninja.errors import HttpError
 from ninja.pagination import PageNumberPagination
 from ninja.pagination import paginate
+from ninja.security import django_auth
 
 from apps.blog.api.schemas import PostDetailSchema
 from apps.blog.api.schemas import PostFilterSchema
@@ -17,22 +20,51 @@ from apps.blog.models import Tag
 
 logger = logging.getLogger(__name__)
 
-router = Router(tags=["posts"])
+router = Router(tags=["posts"], auth=django_auth)
+
+
+def require_perm(perm: str):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(request, *args, **kwargs):
+            if not request.auth.has_perm(perm):
+                raise HttpError(403, "Permission denied")
+            return func(request, *args, **kwargs)
+
+        return wrapper
+
+    return decorator
+
+
+def _get_post(request, post_id: int):
+    return get_object_or_404(Post, id=post_id)
+
+
+def _check_post_owner(request, post: Post) -> None:
+    if post.owner != request.user and not request.auth.is_superuser:
+        raise HttpError(403, "Permission denied")
 
 
 @router.get("/", response={200: list[PostListSchema]})
 @paginate(PageNumberPagination)
+@require_perm("blog.view_post")
 def list_post(request, filters: Query[PostFilterSchema]):
-    posts = Post.objects.all()
+    logger.info("Listing posts auth: %s %s", request.auth, request.user)
+    if request.auth.is_superuser:
+        posts = Post.objects.all()
+    else:
+        posts = Post.objects.filter(owner=request.user)
     return filters.filter(posts)
 
 
 @router.get("/{post_id}", response={200: PostDetailSchema})
+@require_perm("blog.view_post")
 def get_post(request, post_id: int):
-    return get_object_or_404(Post, id=post_id)
+    return _get_post(request, post_id)
 
 
 @router.post("/", response={201: PostOutSchema})
+@require_perm("blog.add_post")
 def create_post(request, payload: PostInSchema):
     created_fields = payload.dict(exclude_unset=True)
 
@@ -50,8 +82,12 @@ def create_post(request, payload: PostInSchema):
 
 
 @router.put("/{post_id}", response={200: PostDetailSchema})
+@require_perm("blog.change_post")
 def update_post(request, post_id: int, payload: PostInSchema):
-    post = get_object_or_404(Post, id=post_id)
+    post = _get_post(request, post_id)
+
+    _check_post_owner(request, post)
+
     updated_fields = payload.dict(exclude_unset=True)
 
     if updated_fields:
@@ -73,6 +109,9 @@ def update_post(request, post_id: int, payload: PostInSchema):
 
 
 @router.delete("/{post_id}", response={204: None})
+@require_perm("blog.delete_post")
 def delete_post(request, post_id: int):
-    post = get_object_or_404(Post, id=post_id)
+
+    post = _get_post(request, post_id)
+    _check_post_owner(request, post)
     post.delete()
