@@ -7,7 +7,7 @@ from django.urls import path
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
 
-from .api import api
+from .api import api_v1
 
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
@@ -34,7 +34,7 @@ if settings.DEBUG:
 # API URLS
 urlpatterns += [
     # API base url
-    path("api/", api.urls),
+    path("api/v1/", api_v1.urls),
 ]
 
 if settings.DEBUG:
