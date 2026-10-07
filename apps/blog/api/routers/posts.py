@@ -1,13 +1,13 @@
 import logging
 from functools import wraps
 
+from allauth.headless.contrib.ninja.security import x_session_token_auth
 from django.shortcuts import get_object_or_404
 from ninja import Query
 from ninja import Router
 from ninja.errors import HttpError
 from ninja.pagination import PageNumberPagination
 from ninja.pagination import paginate
-from ninja.security import django_auth
 
 from apps.blog.api.schemas import PostDetailSchema
 from apps.blog.api.schemas import PostFilterSchema
@@ -20,7 +20,7 @@ from apps.blog.models import Tag
 
 logger = logging.getLogger(__name__)
 
-router = Router(tags=["posts"], auth=django_auth)
+router = Router(tags=["posts"], auth=[x_session_token_auth])
 
 
 def require_perm(perm: str):

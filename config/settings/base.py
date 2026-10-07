@@ -91,8 +91,10 @@ THIRD_PARTY_APPS = [
     "crispy_bootstrap5",
     "allauth",
     "allauth.account",
+    "allauth.headless",
     "allauth.mfa",
     "allauth.socialaccount",
+    "allauth.usersessions",
     "corsheaders",
 ]
 
@@ -297,6 +299,20 @@ SOCIALACCOUNT_ADAPTER = "apps.users.adapters.SocialAccountAdapter"
 # https://docs.allauth.org/en/latest/socialaccount/configuration.html
 SOCIALACCOUNT_FORMS = {"signup": "apps.users.forms.UserSocialSignupForm"}
 
+# https://docs.allauth.org/en/latest/headless/installation.html
+HEADLESS_ONLY = env.bool("DJANGO_HEADLESS_ONLY", default=True)
 
+# https://docs.allauth.org/en/latest/headless/configuration.html
+HEADLESS_CLIENTS = ("app", "browser")
+
+# https://docs.allauth.org/en/latest/headless/configuration.html
+HEADLESS_SERVE_SPECIFICATION = True
+
+# These are the URLs to be implemented by your single-page application.
+HEADLESS_FRONTEND_URLS = {
+    "account_confirm_email": "https://app.project.org/account/verify-email/{key}",
+    "account_reset_password_from_key": "https://app.org/account/password/reset/key/{key}",
+    "account_signup": "https://app.org/account/signup",
+}
 # Your stuff...
 # ------------------------------------------------------------------------------

@@ -1,13 +1,13 @@
+from allauth.headless.contrib.ninja.security import x_session_token_auth
 from django.contrib.admin.views.decorators import staff_member_required
 from ninja import NinjaAPI
-from ninja.security import SessionAuth
 
 from apps.blog.api import category_router
 from apps.blog.api import post_router
 from apps.blog.api import tag_router
 
 api_v1 = NinjaAPI(
-    auth=SessionAuth(),
+    auth=[x_session_token_auth],
     docs_decorator=staff_member_required,
     version="1.0.0",
     urls_namespace="api-v1",
