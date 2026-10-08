@@ -6,6 +6,8 @@ from allauth.account.adapter import DefaultAccountAdapter
 from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.conf import settings
 
+from apps.users.models import Profile
+
 if typing.TYPE_CHECKING:
     from allauth.socialaccount.models import SocialLogin
     from django.http import HttpRequest
@@ -26,23 +28,22 @@ class SocialAccountAdapter(DefaultSocialAccountAdapter):
     ) -> bool:
         return getattr(settings, "ACCOUNT_ALLOW_REGISTRATION", True)
 
-    def populate_user(
+    def save_user(
         self,
         request: HttpRequest,
         sociallogin: SocialLogin,
-        data: dict[str, typing.Any],
+        form=None,
     ) -> User:
-        """
-        Populates user information from social provider info.
-
-        See: https://docs.allauth.org/en/latest/socialaccount/advanced.html#creating-and-populating-user-instances
-        """
-        user = super().populate_user(request, sociallogin, data)
-        if not user.name:
-            if name := data.get("name"):
-                user.name = name
-            elif first_name := data.get("first_name"):
-                user.name = first_name
-                if last_name := data.get("last_name"):
-                    user.name += f" {last_name}"
+        user = super().save_user(request, sociallogin, form)
+        data = sociallogin.account.extra_data
+        profile, _ = Profile.objects.get_or_create(user=user)
+        if first_name := data.get("first_name"):
+            profile.first_name = first_name
+        if last_name := data.get("last_name"):
+            profile.last_name = last_name
+        if name := data.get("name"):
+            info = profile.info.copy() if isinstance(profile.info, dict) else {}
+            info.setdefault("name", name)
+            profile.info = info
+        profile.save(update_fields=["first_name", "last_name", "info"])
         return user

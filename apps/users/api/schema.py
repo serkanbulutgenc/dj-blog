@@ -35,6 +35,7 @@ class ProfileSchema(ModelSchema):
 
 
 class UpdateUserSchema(ModelSchema):
+    username: str
     profile: ProfileInfoSchema | None = None
 
     class Meta:
@@ -53,4 +54,4 @@ class UserSchema(ModelSchema):
 
     @staticmethod
     def resolve_url(obj: User):
-        return reverse("api:retrieve_user", kwargs={"username": obj.username})
+        return reverse("api-v1:retrieve_user", kwargs={"username": obj.username})

@@ -4,13 +4,13 @@ from factory import Faker
 from factory import post_generation
 from factory.django import DjangoModelFactory
 
+from apps.users.models import Profile
 from apps.users.models import User
 
 
 class UserFactory(DjangoModelFactory[User]):
     username = Faker("user_name")
     email = Faker("email")
-    name = Faker("name")
 
     @post_generation
     def password(self: User, create: bool, extracted: str | None, **kwargs):  # noqa: FBT001
@@ -29,6 +29,11 @@ class UserFactory(DjangoModelFactory[User]):
         self.set_password(password)
         if create:
             self.save()
+
+    @post_generation
+    def profile(self: User, create: bool, extracted, **kwargs):  # noqa: FBT001
+        if create:
+            Profile.objects.get_or_create(user=self)
 
     class Meta:
         model = User

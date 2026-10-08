@@ -16,6 +16,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='post',
             name='owner',
-            field=models.ForeignKey(default=None, help_text='Select the owner of the post', on_delete=django.db.models.deletion.CASCADE, related_name='posts', to=settings.AUTH_USER_MODEL, verbose_name='Owner'),
+            field=models.ForeignKey(default=None, help_text='Select the owner of the post', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='posts', to=settings.AUTH_USER_MODEL, verbose_name='Owner'),
         ),
     ]

@@ -73,7 +73,7 @@ class Post(TimeStampedModel, models.Model):
     owner = models.ForeignKey(
         USER_MODEL,
         default=None,
-        null=False,
+        null=True,
         editable=False,
         on_delete=models.CASCADE,
         related_name="posts",

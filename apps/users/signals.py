@@ -11,8 +11,6 @@ logger = logging.getLogger(__name__)
 
 @receiver(user_signed_up, sender=User)
 def create_profile_on_signup(request, user, **kwargs):
-    if user:
-        Profile.objects.create(user=user, first_name="change", last_name="me")
+    _, profile_created = Profile.objects.get_or_create(user=user)
+    if profile_created:
         logger.info("Profile created for user: %s", user.username)
-    else:
-        logger.info("Profile not created for user: %s", user.username)

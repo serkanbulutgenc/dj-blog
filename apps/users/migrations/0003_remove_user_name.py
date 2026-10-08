@@ -3,6 +3,46 @@
 from django.db import migrations
 
 
+def preserve_user_names(apps, schema_editor):
+    User = apps.get_model("users", "User")
+    Profile = apps.get_model("users", "Profile")
+    database = schema_editor.connection.alias
+
+    for user in User.objects.using(database).all().iterator():
+        profile, _ = Profile.objects.using(database).get_or_create(
+            user_id=user.pk,
+            defaults={"info": {}},
+        )
+        if user.name:
+            if isinstance(profile.info, dict):
+                info = profile.info.copy()
+            elif profile.info is None:
+                info = {}
+            else:
+                info = {"previous_info": profile.info}
+            if "name" in info and info["name"] != user.name:
+                info.setdefault("legacy_name", user.name)
+            else:
+                info["name"] = user.name
+            profile.info = info
+            profile.save(using=database, update_fields=["info"])
+
+
+def restore_user_names(apps, schema_editor):
+    User = apps.get_model("users", "User")
+    Profile = apps.get_model("users", "Profile")
+    database = schema_editor.connection.alias
+
+    for user in User.objects.using(database).all().iterator():
+        try:
+            info = user.profile.info
+        except Profile.DoesNotExist:
+            continue
+        if isinstance(info, dict) and "name" in info:
+            user.name = info["name"]
+            user.save(using=database, update_fields=["name"])
+
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -10,6 +50,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(preserve_user_names, restore_user_names),
         migrations.RemoveField(
             model_name='user',
             name='name',
