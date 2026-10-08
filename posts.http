@@ -1,0 +1,16 @@
+### Get all posts
+GET http://localhost:8000/api/v1/posts/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6Ijg2UWJraXZyaTh5MWdaM1RHVXNTYnNFQVR2VzQ5dXJMRHlOaTZfTFlSOUUiLCJ0eXAiOiJKV1QifQ.eyJpYXQiOjE3OTE0NDgxNjQsImV4cCI6MTc5MTQ0ODQ2NCwic2lkIjoibHZjRlQra0s2UGxxNHJKcHZjY2d6Wk9nR1IyVUhWOXZ6L3FFZkpUK0NFbGZGWEptUDhSU05hL1pxQkszc3hlbCIsImp0aSI6IjhkN2QyMmQ5LWVkMGUtNDhmMy1iNGEyLTdjOTdiNGM3OTc0MyIsInRva2VuX3VzZSI6ImFjY2VzcyIsInN1YiI6IjEifQ.krI2nvmy4uN5ROeduXjxXE0raFeJ98sQREwERvJTT0XO6p8F89kiumAx5ux0sGAcR1HPEIIMf1N5UU8L8YYvcbWkLCFs8ILmKIgF0zn_M9ufJOTJnmsUyDKK8ZwOkP5ZUU1LXa0zYo0ZUnmgc9UY2dGpyQYBfLfrTmWatFDRHCx3khkMYOHvRcOSvXIba0Re4gXIScBl5FWNqqiKhvYT4BsaX75V9PqXOuhQ_mFC9BkIXtr_1PaGYTB6Xz1uIAiQq-pm15zMBrLx8x6b4EzD5ItH2ZlTfB9cEllYuoQ8wRfVenZtayvnyVWq5aruuSi-oG_nI6MBO-4igXzluUFZWg
+
+### Get a single post
+GET http://localhost:8000/api/v1/posts/{post_id}/
+
+### Create a new post
+POST http://localhost:8000/api/v1/posts/
+
+### Update a post
+PUT http://localhost:8000/api/v1/posts/{post_id}/
+
+### Delete a post
+DELETE http://localhost:8000/api/v1/posts/{post_id}/

@@ -303,7 +303,7 @@ SOCIALACCOUNT_FORMS = {"signup": "apps.users.forms.UserSocialSignupForm"}
 HEADLESS_ONLY = env.bool("DJANGO_HEADLESS_ONLY", default=True)
 
 # https://docs.allauth.org/en/latest/headless/configuration.html
-HEADLESS_CLIENTS = ("app", "browser")
+HEADLESS_CLIENTS = ("app",)
 
 # https://docs.allauth.org/en/latest/headless/configuration.html
 HEADLESS_SERVE_SPECIFICATION = True
@@ -314,5 +314,13 @@ HEADLESS_FRONTEND_URLS = {
     "account_reset_password_from_key": "https://app.org/account/password/reset/key/{key}",
     "account_signup": "https://app.org/account/signup",
 }
+
+# https://docs.allauth.org/en/latest/headless/configuration.html
+HEADLESS_SPECIFICATION_TEMPLATE_NAME = "headless/spec/swagger_cdn.html"
+
+# https://docs.allauth.org/en/latest/headless/configuration.html
+HEADLESS_TOKEN_STRATEGY = (
+    "allauth.headless.tokens.strategies.jwt.strategy.JWTTokenStrategy"  # noqa:S105
+)
 # Your stuff...
 # ------------------------------------------------------------------------------

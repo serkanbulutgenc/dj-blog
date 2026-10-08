@@ -71,6 +71,9 @@ INSTALLED_APPS += ["django_extensions"]
 # Your stuff...
 # ------------------------------------------------------------------------------
 
+# https://docs.allauth.org/en/latest/headless/token-strategies/jwt-tokens.html
+HEADLESS_JWT_ALGORITHM = "HS256"
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:8000",
     "http://127.0.0.1:8000",

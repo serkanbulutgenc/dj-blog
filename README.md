@@ -23,6 +23,23 @@ Moved to [settings](https://cookiecutter-django.readthedocs.io/en/latest/1-getti
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
+### Authorizing requests in Swagger
+
+1. Open `/api/v1/docs` and sign in with a staff account if redirected to the
+   admin login page. This login controls access to the documentation; it does
+   not authenticate requests to the posts API.
+2. Obtain an **access token** from the allauth headless login flow, just as you
+   do when calling the API from the terminal.
+3. Click **Authorize**, paste only the access token (without the `Bearer `
+   prefix), and confirm. Swagger adds `Authorization: Bearer <access-token>`
+   to requests for protected endpoints.
+4. Use **Try it out** on a posts endpoint. The token's user still needs the
+   corresponding blog permissions. A `401` indicates missing or invalid
+   authentication; a `403` indicates insufficient permissions.
+
+Use an access token, not a refresh token or an `X-Session-Token`. When the
+access token expires, obtain a new one and authorize again.
+
 ### Type checks
 
 Running type checks with mypy:

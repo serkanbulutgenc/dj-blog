@@ -1,7 +1,6 @@
 import logging
 from functools import wraps
 
-from allauth.headless.contrib.ninja.security import x_session_token_auth
 from django.shortcuts import get_object_or_404
 from ninja import Query
 from ninja import Router
@@ -14,20 +13,21 @@ from apps.blog.api.schemas import PostFilterSchema
 from apps.blog.api.schemas import PostInSchema
 from apps.blog.api.schemas import PostListSchema
 from apps.blog.api.schemas import PostOutSchema
+from apps.blog.api.security import jwt_bearer_auth
 from apps.blog.models import Category
 from apps.blog.models import Post
 from apps.blog.models import Tag
 
 logger = logging.getLogger(__name__)
 
-router = Router(tags=["posts"], auth=[x_session_token_auth])
+router = Router(tags=["posts"], auth=[jwt_bearer_auth])
 
 
 def require_perm(perm: str):
     def decorator(func):
         @wraps(func)
         def wrapper(request, *args, **kwargs):
-            if not request.auth.has_perm(perm):
+            if not request.user.has_perm(perm):
                 raise HttpError(403, "Permission denied")
             return func(request, *args, **kwargs)
 
@@ -41,7 +41,7 @@ def _get_post(request, post_id: int):
 
 
 def _check_post_owner(request, post: Post) -> None:
-    if post.owner != request.user and not request.auth.is_superuser:
+    if post.owner != request.user and not request.user.is_superuser:
         raise HttpError(403, "Permission denied")
 
 
@@ -49,8 +49,8 @@ def _check_post_owner(request, post: Post) -> None:
 @paginate(PageNumberPagination)
 @require_perm("blog.view_post")
 def list_post(request, filters: Query[PostFilterSchema]):
-    logger.info("Listing posts auth: %s %s", request.auth, request.user)
-    if request.auth.is_superuser:
+    logger.info("Listing posts auth: %s", request.user)
+    if request.user.is_superuser:
         posts = Post.objects.all()
     else:
         posts = Post.objects.filter(owner=request.user)
@@ -74,7 +74,11 @@ def create_post(request, payload: PostInSchema):
     post_tag_ids = created_fields.pop("tags", None)
     post_tags = Tag.objects.filter(id__in=post_tag_ids) if post_tag_ids else None
 
-    post = Post.objects.create(**created_fields, category=post_category)
+    post = Post.objects.create(
+        **created_fields,
+        category=post_category,
+        owner=request.user,
+    )
 
     if post_tags:
         post.tags.set(post_tags)
