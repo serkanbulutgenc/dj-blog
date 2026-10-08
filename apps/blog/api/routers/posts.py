@@ -1,6 +1,10 @@
 import logging
 from functools import wraps
 
+from django.db.models import Count
+from django.db.models import Exists
+from django.db.models import OuterRef
+from django.db.models import QuerySet
 from django.shortcuts import get_object_or_404
 from ninja import Query
 from ninja import Router
@@ -11,16 +15,18 @@ from ninja.pagination import paginate
 from apps.blog.api.schemas import PostDetailSchema
 from apps.blog.api.schemas import PostFilterSchema
 from apps.blog.api.schemas import PostInSchema
+from apps.blog.api.schemas import PostLikeStateSchema
 from apps.blog.api.schemas import PostListSchema
 from apps.blog.api.schemas import PostOutSchema
 from apps.blog.api.security import jwt_bearer_auth
 from apps.blog.models import Category
 from apps.blog.models import Post
+from apps.blog.models import PostLike
 from apps.blog.models import Tag
 
 logger = logging.getLogger(__name__)
 
-router = Router(tags=["posts"], auth=[jwt_bearer_auth])
+router = Router(tags=["Posts"], auth=[jwt_bearer_auth])
 
 
 def require_perm(perm: str):
@@ -36,8 +42,20 @@ def require_perm(perm: str):
     return decorator
 
 
+def _with_like_state(request, posts: QuerySet[Post]) -> QuerySet[Post]:
+    return posts.annotate(
+        likes_count=Count("likes", distinct=True),
+        is_liked=Exists(
+            PostLike.objects.filter(post_id=OuterRef("pk"), user_id=request.user.pk),
+        ),
+    )
+
+
 def _get_post(request, post_id: int):
-    return get_object_or_404(Post, id=post_id)
+    return get_object_or_404(
+        _with_like_state(request, Post.objects.all()),
+        id=post_id,
+    )
 
 
 def _check_post_owner(request, post: Post) -> None:
@@ -54,7 +72,9 @@ def list_post(request, filters: Query[PostFilterSchema]):
         posts = Post.objects.all()
     else:
         posts = Post.objects.filter(owner=request.user)
-    return filters.filter(posts)
+    # Aggregate annotations suppress implicit model ordering.
+    posts = filters.filter(posts).order_by("-created")
+    return _with_like_state(request, posts)
 
 
 @router.get("/{post_id}", response={200: PostDetailSchema})
@@ -109,7 +129,7 @@ def update_post(request, post_id: int, payload: PostInSchema):
         else:
             post.tags.clear()
         post.save()
-    return post
+    return _get_post(request, post_id)
 
 
 @router.delete("/{post_id}", response={204: None})
@@ -119,3 +139,17 @@ def delete_post(request, post_id: int):
     post = _get_post(request, post_id)
     _check_post_owner(request, post)
     post.delete()
+
+
+@router.put("/{post_id}/like", response={200: PostLikeStateSchema})
+def like_post(request, post_id: int):
+    post = get_object_or_404(Post, id=post_id)
+    PostLike.objects.get_or_create(post=post, user=request.user)
+    return _get_post(request, post_id)
+
+
+@router.delete("/{post_id}/like", response={200: PostLikeStateSchema})
+def unlike_post(request, post_id: int):
+    post = get_object_or_404(Post, id=post_id)
+    PostLike.objects.filter(post=post, user=request.user).delete()
+    return _get_post(request, post_id)

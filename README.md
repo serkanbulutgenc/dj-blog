@@ -40,6 +40,51 @@ For convenience, you can keep your normal user logged in on Chrome and your supe
 Use an access token, not a refresh token or an `X-Session-Token`. When the
 access token expires, obtain a new one and authorize again.
 
+### Post likes
+
+Any authenticated user can like any existing post, including their own, without
+blog model permissions. Each user has at most one like per post, enforced by a
+database constraint. Users can remove their own like and like the post again.
+
+Send an allauth access token in the `Authorization: Bearer <access-token>`
+header. No request body or user ID is needed:
+
+```http
+PUT /api/v1/posts/123/like
+Authorization: Bearer <access-token>
+```
+
+```json
+{"post_id": 123, "likes_count": 1, "is_liked": true}
+```
+
+```http
+DELETE /api/v1/posts/123/like
+Authorization: Bearer <access-token>
+```
+
+```json
+{"post_id": 123, "likes_count": 0, "is_liked": false}
+```
+
+Both operations return `200`. Repeated PUTs do not add duplicate likes, and
+repeated DELETEs do not remove other users' likes. Missing or invalid
+authentication returns `401`; an unknown post returns `404`. GET does not
+change likes. Totals reflect the database when read and can change as other
+users like or unlike the post.
+
+Post list, detail, and update responses also include read-only `likes_count`
+and `is_liked` fields. Existing read and CRUD permissions are unchanged:
+reading posts still requires `blog.view_post`, and non-superusers still list
+only their own posts. Like endpoints intentionally allow authenticated users
+without read permission to discover a post's existence and like count.
+
+Apply the new migration before using this feature:
+
+```sh
+uv run python manage.py migrate
+```
+
 ### Type checks
 
 Running type checks with mypy:

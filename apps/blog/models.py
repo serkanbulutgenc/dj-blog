@@ -1,6 +1,7 @@
 # Create your models here.
 import logging
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator
 from django.db import models
@@ -112,3 +113,31 @@ class Post(TimeStampedModel, models.Model):
 
     def __str__(self):
         return self.title
+
+
+class PostLike(TimeStampedModel, models.Model):
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name="likes",
+        verbose_name=_("Post"),
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="post_likes",
+        verbose_name=_("User"),
+    )
+
+    class Meta:
+        verbose_name = _("Post like")
+        verbose_name_plural = _("Post likes")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["post", "user"],
+                name="unique_post_user_like",
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.user_id}: {self.post_id}"

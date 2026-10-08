@@ -4,6 +4,7 @@ from typing import Annotated
 
 from ninja import Field
 from ninja import ModelSchema
+from ninja import Schema
 from ninja.filter_schema import FilterSchema
 from pydantic import PositiveInt  # noqa:TC002
 
@@ -68,6 +69,8 @@ class PostInSchema(ModelSchema):
 
 
 class PostListSchema(ModelSchema):
+    likes_count: int
+    is_liked: bool
     category: CategoryListSchema | None = None
     tags: list[TagSchemas.TagListSchema] | None = None
     owner: Annotated[str | None, Field(alias="owner.username")]
@@ -84,9 +87,18 @@ class PostOutSchema(ModelSchema):
 
 
 class PostDetailSchema(ModelSchema):
+    likes_count: int
+    is_liked: bool
+
     class Meta:
         model = Post
         fields = "__all__"
+
+
+class PostLikeStateSchema(Schema):
+    post_id: int = Field(alias="id")
+    likes_count: int
+    is_liked: bool
 
 
 class PostFilterSchema(FilterSchema):
